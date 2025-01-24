@@ -32,8 +32,11 @@ INCS = $(addprefix $(P_INC), ft_printf.h)
 
 # Targets
 all: $(P_LIB)libftprintf.a
-	clang -g3 -Weverything src/server.c -o server -Llib -lftprintf -I inc
-	clang -g3 -Weverything src/client.c -o client -Llib -lftprintf -I inc
+	@mkdir -p $(P_OBJ) $(P_OBJ)/client $(P_OBJ)/server
+	cc -g3 -Wextra -Wall src/server.c -o server -Llib -lftprintf -I inc
+	cc -g3 -Wextra -Wall -c src/client/ft_atoi.c -o .obj/client/ft_atoi.o -I inc
+	cc -g3 -Wextra -Wall -c src/client/bonus.c -o .obj/client/bonus.o -I inc
+	cc -g3 -Wextra -Wall src/client.c -o client .obj/client/bonus.o .obj/client/ft_atoi.o -Llib -lftprintf -I inc
 
 # all: $(NAME) $(SNAME)
 

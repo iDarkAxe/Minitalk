@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ppontet <ppontet@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/01/24 16:18:02 by ppontet           #+#    #+#             */
-/*   Updated: 2025/01/24 16:27:24 by ppontet          ###   ########lyon.fr   */
+/*   Created: 2025/01/24 21:24:30 by ppontet           #+#    #+#             */
+/*   Updated: 2025/01/24 21:24:50 by ppontet          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ void	sig_cont(int code)
 void	sig_term(int code)
 {
 	fprintf(stderr, ">>> SIGTERM received [%d]\n", code);
-	// Pour forcer les appels sur les fonctions enregistrées par atexit
 	exit(EXIT_SUCCESS);
 }
 
@@ -37,15 +36,11 @@ int	main(void)
 {
 	int		signal_id;
 	char	buffer[100];
-	// On enregistre des fonctions à exécuter
-	// en cas de sortie normale du processus.
+
 	atexit(exit_function);
-	// On enregistre quelques gestionnaires de signaux.
 	signal(SIGTERM, &sig_term);
 	signal(SIGCONT, &sig_cont);
-	// Un message d'accueil.
 	printf("Welcome to SignalTest V1.0 :-)\n");
-	// La boucle principale de notre console.
 	while (true)
 	{
 		printf("Enter a command: ");
@@ -55,15 +50,11 @@ int	main(void)
 			break ;
 		if (strcmp(buffer, "help") == 0)
 		{
-			// Affiche la liste des signaux supportés par le système.
-			// Attention : ne marche que sur Linux/Unix !!!
 			system("bash -c \"kill -l\"");
 			continue ;
 		}
 		signal_id = atoi(buffer);
-		raise(signal_id); // C ISO
-							// kill( getpid(), signalId );
-							// POSIX (requière <unistd.h>)
+		raise(signal_id);
 	}
 	return (EXIT_SUCCESS);
 }
