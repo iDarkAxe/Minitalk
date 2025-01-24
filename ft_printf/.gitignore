@@ -1,0 +1,7 @@
+a.out
+libftprintf.a
+main.c
+tester_ft_printf.c
+.obj
+temp
+libft
