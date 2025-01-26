@@ -6,7 +6,7 @@
 /*   By: ppontet <ppontet@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 20:21:19 by ppontet           #+#    #+#             */
-/*   Updated: 2025/01/25 13:10:39 by ppontet          ###   ########lyon.fr   */
+/*   Updated: 2025/01/26 17:53:50 by ppontet          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-static int ft_atoi(const char *nptr);
+static int	ft_atoi(const char *nptr);
 
 int	find_server_pid(int argc, char **argv, char **string, pid_t *g_server_pid)
 {
@@ -33,7 +33,7 @@ int	find_server_pid(int argc, char **argv, char **string, pid_t *g_server_pid)
 	*string = argv[1];
 	system("ps aux | grep \
 		-v \"grep\" | grep \" ./server\" | awk '{print $2}' > .pid");
-	fd = open(".pid", O_RDONLY | O_CREAT);
+	fd = open(".pid", O_RDONLY);
 	if (fd == -1)
 	{
 		ft_printf("Error\nNo server found\n");
