@@ -6,7 +6,7 @@
 /*   By: ppontet <ppontet@student.42lyon.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/24 15:09:46 by ppontet           #+#    #+#             */
-/*   Updated: 2025/01/26 17:54:19 by ppontet          ###   ########lyon.fr   */
+/*   Updated: 2025/01/27 10:20:52 by ppontet          ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ static int		ft_atoi(const char *nptr);
 
 // Variable globale pour la bonne reception de l'ACK
 static volatile char	g_ack_received = 1;
-static __pid_t			g_server_pid;
 
 /**
  * @brief Main function of the client.
@@ -34,6 +33,7 @@ static __pid_t			g_server_pid;
 int	main(int argc, char **argv)
 {
 	struct sigaction	action_receive;
+	pid_t				server_pid;
 
 	if (argc < 3 || argc > 3)
 	{
@@ -41,8 +41,8 @@ int	main(int argc, char **argv)
 		ft_printf("Usage: %s <PID> <SIGNAL>\n", argv[0]);
 		exit(-1);
 	}
-	g_server_pid = ft_atoi(argv[1]);
-	if (g_server_pid == 0)
+	server_pid = ft_atoi(argv[1]);
+	if (server_pid == 0)
 	{
 		ft_printf("Error\nInvalid PID\n");
 		exit(-1);
@@ -52,7 +52,7 @@ int	main(int argc, char **argv)
 	action_receive.sa_flags = SA_RESTART | SA_SIGINFO;
 	sigaction(SIGUSR1, &action_receive, NULL);
 	sigaction(SIGUSR2, &action_receive, NULL);
-	send_string(g_server_pid, argv[2]);
+	send_string(server_pid, argv[2]);
 	return (0);
 }
 
@@ -71,9 +71,9 @@ static void	signal_handler(int sig, siginfo_t *info, void *context)
 {
 	(void)info;
 	(void)context;
-	if (sig == SIGUSR1 && info->si_pid == g_server_pid)
+	if (sig == SIGUSR1)
 		g_ack_received = 1;
-	else if (sig == SIGUSR2 && info->si_pid == g_server_pid)
+	else if (sig == SIGUSR2)
 		usleep(100);
 	else
 		exit(1);
@@ -89,7 +89,7 @@ static void	signal_handler(int sig, siginfo_t *info, void *context)
  * @param server_pid Server PID.
  * @param bit Bit to send.
  */
-static void	send_bit(__pid_t server_pid, char bit)
+static void	send_bit(pid_t server_pid, char bit)
 {
 	int	elapsed;
 
@@ -119,7 +119,7 @@ static void	send_bit(__pid_t server_pid, char bit)
  * @param server_pid Server PID.
  * @param string String to send.
  */
-static void	send_string(__pid_t server_pid, char *string)
+static void	send_string(pid_t server_pid, char *string)
 {
 	size_t	index;
 	char	bit;
